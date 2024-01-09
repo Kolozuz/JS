@@ -75,6 +75,7 @@
 		"turboConsoleLog.wrapLogMessage": false,
 		"turboConsoleLog.logMessagePrefix": "",
 		"php.validate.executablePath": null,
+		"redhat.telemetry.enabled": false,
 		"[csharp]": {
 			"editor.defaultFormatter": "ms-dotnettools.csharp"
 		},
@@ -84,6 +85,32 @@
 		"[php]": {
 			"editor.defaultFormatter": "DEVSENSE.phptools-vscode",
 		},
+		"[vue]": {
+			"editor.defaultFormatter": "Vue.volar"
+		},
+		"[markdown]": {
+			"editor.formatOnSave": true,
+			"editor.formatOnPaste": true
+		},
+		"editor.unicodeHighlight.ambiguousCharacters": false,
+		"githubPullRequests.fileListLayout": "tree",
+		"githubPullRequests.pullBranch": "never",
+		"php.codeLens.enabled": false,
+		"editor.colorDecorators": true,
+		"editor.colorDecoratorsActivatedOn": "hover",
+		"zenMode.silentNotifications": true,
+		"diffEditor.ignoreTrimWhitespace": false,
+		"tabnine.experimentalAutoImports": true,
+		"github.copilot.enable": {
+			"*": true,
+			"plaintext": false,
+			"markdown": true,
+			"scminput": false
+		},
+		"git.openRepositoryInParentFolders": "never",
+		"editor.wordWrap": "on",
+		"workbench.colorTheme": "Default Dark Modern",
+		"workbench.iconTheme": "vs-seti",
 	},
 	"extensions": {
 		"recommendations": [
