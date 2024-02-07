@@ -3,7 +3,8 @@ $AplicationsList = @(
 	"Git.Git"
 	"GitHub.GitHubDesktop"
 	"Insomnia.Insomnia"
-	#"Microsoft.XNARedist"
+	"CPUID.HWMonitor"
+ 	"CPUID.CPU-Z"
 	# Terminal
 	"Microsoft.WindowsTerminal"
 	# Cli
