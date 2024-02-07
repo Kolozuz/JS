@@ -5,6 +5,10 @@ $AplicationsList = @(
 	"Insomnia.Insomnia"
 	"CPUID.HWMonitor"
  	"CPUID.CPU-Z"
+  	"Maxon.CinebenchR23"
+  	"Guru3D.Afterburner"
+  	"OPAutoClicker.OPAutoClicker"
+  	"Skillbrains.Lightshot"
 	# Terminal
 	"Microsoft.WindowsTerminal"
 	# Cli
