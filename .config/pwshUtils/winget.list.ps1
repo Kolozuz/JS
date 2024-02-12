@@ -14,10 +14,10 @@ $AplicationsList = @(
 	# Cli
 	"Microsoft.PowerShell"
 	"GitHub.cli"
-	# Editores de texto y IDEs
+	# Text editors / IDEs
 	"Microsoft.VisualStudioCode"
 	"Neovim.Neovim"
-	# Lenguajes de programación
+	# Programming Languages
 	"CoreyButler.NVMforWindows"
 	"Python.Python.3.11"
 	"Rustlang.Rustup"
@@ -29,9 +29,10 @@ $AplicationsList = @(
 	"OBSProject.OBSStudio"
 	"GIMP.GIMP"
 	"Microsoft.PowerToys"
-	# Games
+	# Games / Modding
 	"Valve.Steam"
 	"Nvidia.GeForceNow"
+ 	"NexusMods.Vortex"
 	# Emulation
 	"Libretro.RetroArch"
 	# Remote
