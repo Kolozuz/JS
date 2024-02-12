@@ -3,20 +3,19 @@ $MyPaths = $env:MY_PATHS -split ";"
 $RepoHashPath = $MyPaths[0]
 $RepoCLIPath = $MyPaths[1]
 
-Set-Variable -Name "splitedEnv" -Value $env:Path.Split(";")
-
-function Get-LogCustom {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$message,
-        [Parameter(Mandatory = $false)]
-        [string]$type = "INFO"
-    )
-    $dateString = Get-Date -Format "dd-MM-yyyy HH:mm:ss"
-    $log = "$dateString - $type - $message"
-    Write-Host $log
-    Add-Content -Path $LogsPath -Value $log
+function Test-RepoCLIDependencies {
+    if (-not(Test-Path $RepoHashPath)) {
+        Write-Host "Creando archivo $RepoHashPath"
+        New-Item $RepoHashPath -ErrorAction SilentlyContinue
+    }
+    if (-not(Test-Path $RepoCLIPath)) {
+        Write-Host "Creando archivo $RepoCLIPath"
+        New-Item $RepoCLIPath -ErrorAction SilentlyContinue
+    }
 }
+
+Test-RepoCLIDependencies
+
 function Write-RepoCLIParams {
     param (
         [Parameter(Mandatory = $true)]
@@ -31,7 +30,7 @@ function Write-RepoCLIParams {
             $RepoNames += $Repo.Key
         }
         Add-Content -Path $RepoHashPath -value "}"
-    
+
         $RepoNamesJoin = $RepoNames -join "','"
         Add-Content -Path $RepoHashPath -value $('$RepoNames = @(' + "'$RepoNamesJoin'" + ')')
     }
@@ -87,23 +86,63 @@ function Get-RepoCLI {
     }
     catch {
         Write-Host "Error: $($_.Exception.Message)"
-    }    
+    }
 }
 function Edit-RepoCLI {
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string]$RepoToEdit,
 
-        [Parameter(Mandatory = $true)]
-        [string]$NewRepoPath
+        [Parameter()]
+        [string]$NewRepoPath,
+
+        [Parameter()]
+        [string]$NewName,
+
+        [switch]$OnlyName = $false
     )
-    $RepoHash = @{}
-    . $RepoHashPath
+    try {
 
-    $RepoHash[$RepoToEdit] = $NewRepoPath
+        $RepoHash = @{}
+        . $RepoHashPath
+        Write-Host "RepoToEdit: $RepoToEdit"
 
-    Write-RepoCLIParams -RepoHash $RepoHash
-    Build-RepoCLI
+
+        Write-Host "Confirmación de parámetros: NewRepoPath: $NewRepoPath, NewName: $NewName, OnlyName: $OnlyName"
+        if (-not $RepoHash.ContainsKey($RepoToEdit)) {
+            throw "El repositorio '$RepoToEdit' no existe, no se puede editar. Las opciones válidas son: $($RepoHash.Keys -join ', ')"
+        }
+        Write-Host "El repositorio '$RepoToEdit' existe"
+        if ($NewRepoPath -eq "" -or $null -eq $NewRepoPath) {
+            $NewRepoPath = $RepoHash[$RepoToEdit]
+            Write-Host "No se ha proporcionado un nuevo directorio para el repositorio, se usará el actual"
+        }
+        if (-not (Test-Path $NewRepoPath)) {
+            throw "El directorio '$NewRepoPath' no existe"
+        }
+        Write-Host "El directorio '$NewRepoPath' existe"
+
+        if ($NewName -ne "" -and $OnlyName -eq $true) {
+            Write-Host "Se ha proporcionado un nuevo nombre para el repositorio"
+            $RepoHash.Add($NewName, $RepoHash[$RepoToEdit])
+            $RepoHash.Remove($RepoToEdit)
+        }
+        elseif ($NewName -ne "" -and $OnlyName -eq $false) {
+            Write-Host "Se ha proporcionado un nuevo nombre y un nuevo directorio para el repositorio"
+            $RepoHash.Remove($RepoToEdit)
+            $RepoHash.Add($NewName, $NewRepoPath)
+        }
+        else {
+            Write-Host "Se ha proporcionado un nuevo directorio para el repositorio"
+            $RepoHash[$RepoToEdit] = $NewRepoPath
+        }
+
+        Write-RepoCLIParams -RepoHash $RepoHash
+        Build-RepoCLI
+    }
+    catch {
+        Write-Host "Error: $($_.Exception.Message)"
+    }
 
 }
 function Build-RepoCLI {
@@ -136,8 +175,4 @@ function Build-RepoCLI {
         Write-Host "Error: `$(`$_.Exception.Message)"
     }
 "@
-}
-function AddGitBashBin {
-    $env:Path += ";C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin"
-    Write-Host "Git Bash agregado al Path"
 }
